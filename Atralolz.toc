@@ -1,0 +1,9 @@
+## Interface: 30300
+## Title: |c00DC143CAtralolz Scripts|r |c000000FF(for 3.3.5a)|r
+## Notes: |c00FFA500<|r |c00F5F5DCCustom scripts for WotLK|r |c00FFA500>|r 
+## Author: Atralolz
+
+core\1.lua
+core\2.lua
+core\3.lua
+core\4.lua
