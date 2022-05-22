@@ -1,4 +1,7 @@
-﻿local cvars = {
+﻿--------------------------------------------------------------------------------
+-- Console Variables
+--------------------------------------------------------------------------------
+local cvars = {
 
     --[[ CONTROLS ]] --
 
@@ -6,16 +9,20 @@
     autoDismountFlying = "0", -- Автоматическое спешивание при применении заклинания с флай маунта
     autoDismount = "1", -- Автоматическое спешивание при применении заклинания
     autointeract = "0", -- Автоматическое взаимодействие
-    --	autoLootDefault = "1", -- Включает автолут
-    autoOpenLootHistory = "0", -- Автооткрытие окна ролла лута при выпадении необычное и выше
     autoStand = "1", -- Встать при использовании способности
-    autoUnshift = "0", -- Автоматическое сбрасывание формы при использовании заклинаний
-    blockChannelInvites = "1", -- Блокировать приглашения в каналы чата
+    autoUnshift = "1", -- Автоматическое сбрасывание формы при использовании заклинаний
+
+    blockChannelInvites = "0", -- Блокировать приглашения в каналы чата
     blockTrades = "0", -- Блокировать обмен
-    deselectOnClick = "0", -- Сброс цели при клике по пустой области
-    interactOnLeftClick = "0", -- Взаимодействие по щелчку
+
     lootUnderMouse = "1", -- Окно лута под курсором
+    autoLootDefault = "1", -- Включает автолут
+    -- autoLootKey = "SHIFT",
+    autoOpenLootHistory = "0", -- Автооткрытие окна ролла лута при выпадении необычное и выше
+    interactOnLeftClick = "0", -- Взаимодействие по щелчку
+
     synchronizeBindings = "1", -- no UI
+    synchronizeChatFrames = "1",
     synchronizeConfig = "1", -- no UI
     synchronizeMacros = "1", -- no UI
     synchronizeSettings = "1", -- no UI
@@ -23,58 +30,64 @@
     --[[ COMBAT ]] --
 
     ActionButtonUseKeyDown = "1", -- Способности будут задействоваться, когда пользователь нажимает, а не отпускает клавишу
-    assistAttack = "1",
+    assistAttack = "1", -- Цель цели
     autoSelfCast = "1", -- Автовыбор себя
-    displaySpellActivationOverlays = "0", -- Проки по центру экрана
-    lossOfControl = "1",
-    lossOfControlDisarm = "2",
-    lossOfControlFull = "2",
-    lossOfControlInterrupt = "2",
-    lossOfControlRoot = "2",
-    lossOfControlSilence = "2",
-    spellActivationOverlayOpacity = "0", -- Проки на панелях
     stopAutoAttackOnTargetChange = "0", -- Прекращение автоатаки при смене цели
+    deselectOnClick = "0", -- Сброс цели при клике по пустой области
+    BreakUpLargeNumbers = "1", -- Разделяеть запятой тысячи
 
-    --[[ DISPLAY ]] --
+    comboPointLocation = "1", -- Старое отображение комбопоинтов
+    showSpenderFeedback = "0", -- Отключить полоску об использовании энергии
+    doNotFlashLowHealthWarning = "1",
 
-    displayFreeBagSlots = "1", -- Показать свободные ячейки в рюкзаке
+    spellActivationOverlayOpacity = "0", -- Проки на панелях
+    displaySpellActivationOverlays = "0", -- Проки по центру экрана
     displayWorldPVPObjectives = "1", -- Показать PvP объекты 
-    dontShowEquipmentSetsOnItems = "0", -- no UI
-    movieSubtitle = "1",
-    Outline = "1", -- Quest Objectives Only
-    screenEdgeFlash = "0", -- no UI
-    serviceTypeFilter = "2", -- no UI
-    showQuestTrackingTooltips = "1", -- no UI
 
     threatWarning = "0", -- Агрометр
     threatPlaySounds = "0", -- Звуковое оповещение об угрозе
     threatShowNumeric = "0", -- Показывать или не показывать числовую угрозу на тaргете и фокусе
     threatWorldText = "0", -- Показывать или не показывать угрозу в бою
 
-    timeMgrUseLocalTime = "1", -- no UI
-    BreakUpLargeNumbers = "1", -- Разделяеть запятой тысячи
+    lossOfControl = "1",
+    lossOfControlDisarm = "2",
+    lossOfControlFull = "2",
+    lossOfControlInterrupt = "2",
+    lossOfControlRoot = "2",
+    lossOfControlSilence = "2",
+
+    --[[ DISPLAY ]] --
+
+    displayFreeBagSlots = "1", -- Показать свободные ячейки в рюкзаке
+    dontShowEquipmentSetsOnItems = "0", -- no UI
+    movieSubtitle = "1",
+    Outline = "1", -- Quest Objectives Only
+    screenEdgeFlash = "0", -- no UI
+    serviceTypeFilter = "2", -- no UI
+    showQuestTrackingTooltips = "1", -- no UI	
+    timeMgrUseMilitaryTime = "1", -- 24-часовой формат
+    timeMgrUseLocalTime = "1", -- Показывать локальное время
     calendarShowResets = "1", -- Должны ли появляться сбросы рейдов в календаре
-    showSpenderFeedback = "0", -- Отключить полоску об использовании энергии
-    comboPointLocation = "0", -- Старое отображение комбопоинтов
     alwaysCompareItems = "0", -- Сравнение вещей Shift
 
     --[[ OBJECTIVES ]] --
 
-    autoQuestWatch = "1",
-    autoQuestProgress = "0", -- no UI
+    -- autoQuestWatch     = "1",
+    -- autoQuestProgress  = "1", -- no UI
     mapFade = "0",
-    --	mapQuestDifficulty = "0",
-    trackQuestSorting = "proximity",
-    --	watchFrameWidth    = "1",
+    -- mapQuestDifficulty = "0",
+    -- trackQuestSorting  = "proximity",
+    -- watchFrameWidth    = "1",
 
-    --[[ COSIAL ]] --
+    --[[ SOCIAL ]] --
 
     chatBubbles = "0", -- Сообщения в облачках
     chatBubblesParty = "0", -- Сообщения в облачках для группы
     chatStyle = "classic", -- Стиль чата ("classic" or "im")
     --	chatTimestamps           = "none",
     colorChatNamesByClass = "1", -- no UI
-    guildMemberNotify = "1",
+    chatClassColorOverride = "0", -- 0 means always use class colors
+    guildMemberNotify = "0",
     profanityFilter = "0", -- Фильтр ненормативной лексики
     removeChatDelay = "1", -- Удалить задержку чата
     showToastWindow = "0",
@@ -118,6 +131,8 @@
     showPartyBackground = "0",
     showPartyPets = "0", -- Петомцы группы
 
+    statusTextDisplay = "CUSTOM", -- Текст на полосках здоровья
+
     --[[ UNIT NAMES ]] --
 
     UnitNameOwn = "0", -- Имя игрока
@@ -143,7 +158,8 @@
 
     --[[ RAID PROFILES ]] --
 
-    raidFramesDisplayAggroHighlight = "0", -- Индикатор угрозы рейда
+    useCompactPartyFrames = "1", -- Интерфейс рейда для группы
+    raidFramesDisplayAggroHighlight = "1", -- Индикатор угрозы рейда
     raidFramesDisplayClassColor = "1", -- Цвета классов
     raidFramesDisplayOnlyDispellableDebuffs = "1", -- Показать только рассеиваемые отрицательные эффекты
     raidFramesDisplayPowerBars = "0", -- Индикаторы ресурсов
@@ -154,10 +170,10 @@
     raidOptionDisplayMainTankAndAssist = "1", -- Показать главного танка и наводчика
     raidOptionDisplayPets = "0", -- Показать питомцев
     --	raidOptionIsShown = "1", 
-    --	raidOptionKeepGroupsTogether = "1", -- Рейдовый интерфейс для группы
+    raidOptionKeepGroupsTogether = "1", -- Рейдовый интерфейс для группы
     --	raidOptionLocked = 'lock' -- 
-    raidOptionShowBorders = "1", -- Показать граници
-    raidOptionSortMode = 'role', -- Сортировка по роли
+    raidOptionShowBorders = "0", -- Показать граници
+    -- raidOptionSortMode = 'role', -- Сортировка по роли
 
     --[[ CAMERA ]] --
 
@@ -174,30 +190,39 @@
     addFriendInfoShown = "1",
     screenshotFormat = "png", -- Формат скриншота
     screenshotQuality = "10", -- Качество скриншота
-    talentFrameShown = "1",
+    -- talentFrameShown   = "1",
+
+    --[[ VOICECHAT ]] --
+    VoiceChatMasterVolumeScale = "0",
 
     --[[ GRAPHICS ]] --
 
     ffxGlow = "0", -- full screen glow
     ffxDeath = "0",
-    groundEffectDist = "100",
-    groundEffectDensity = "128",
-    --	maxfps              = "30",
-    maxfpsbk = "15",
-    pathSmoothing = "1",
-    uiscale = "1", -- Размер интерфейса
-    useUiScale = "1", -- never wanted this before, but its behavior is different in 7.1
-    violenceLevel = "5" -- min 0, max 5
+    -- ffxNether = "0",
+    -- groundEffectDist    = "100",
+    -- groundEffectDensity = "128",
+    vsync = "1", -- Вертикальная синхронизация
+    maxfps = "0", -- fps 
+    maxfpsbk = "5", -- fps когда окно игры неактивно
+    -- pathSmoothing = "1",
+    -- uiscale = "1", -- Размер интерфейса
+    -- useUiScale = "1", -- never wanted this before, but its behavior is different in 7.1
+    -- violenceLevel = "5", -- min 0, max 5
+
+    --[[ SYSTEM ]] --
+
+    checkAddonVersion = "0"
 
 }
 
 local f = CreateFrame("Frame")
 f:RegisterEvent("PLAYER_LOGIN")
 f:SetScript("OnEvent", function()
-    SetAutoDeclineGuildInvites(true)
-    ShowAccountAchievements(true) -- show ONLY account achievements
-    ConsoleExec("fixedfunction 1") -- disable "tunnel vision" glow effect (not a cvar)
-    ConsoleExec("extShadowQuality 0") -- disable shadows
+    -- SetAutoDeclineGuildInvites(true) -- Блокировать приглашения в гильдию
+    -- ShowAccountAchievements(true) -- show ONLY account achievements
+    -- ConsoleExec("fixedfunction 1") -- disable "tunnel vision" glow effect (not a cvar)
+    -- ConsoleExec("extShadowQuality 0") -- disable shadows
 
     for cvar, value in pairs(cvars) do
         local current = tostring(GetCVar(cvar))
@@ -207,11 +232,13 @@ f:SetScript("OnEvent", function()
         end
     end
 end)
-
+--[[
 hooksecurefunc("SetCVar", function(k, v)
-    local o = cvars[k]
-    if o and tostring(v) ~= o then
-        print("|cffff9f7fSetCVar|r", k, o, "|cffff9f7f==>|r", v)
-        print("Cvars : Initialized")
-    end
+	local o = cvars[k]
+	if o and tostring(v) ~= o then
+		--print("|cffff9f7fSetCVar|r", k, o, "|cffff9f7f==>|r", v)
+		--print("Cvars : Initialized")
+	end
 end)
+]] --
+print("Loaded Cvars")

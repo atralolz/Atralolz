@@ -1,45 +1,20 @@
-## Interface: 70300
-## Title: |c0096FF96Atralolz|r
-## Notes: |c00FFFF00By Atralolz|r |c006969FF(for Legion 7.3.5)|r
+## Interface: 90150
+## Title: |c00FFFF00Atralolz|r
+## Notes: |c00FFFFFFCustom Scripts for SL|r
 ## Author: Atralolz
 
-core\1.lua
-core\2.lua
-core\3.lua
-core\4.lua
-core\5.lua
-core\6.lua
-core\7.lua
-core\8.lua
-core\9.lua
-core\10.lua
-core\11.lua
-core\12.lua
-core\13.lua
-core\14.lua
-core\15.lua
-core\16.lua
-core\17.lua
-core\18.lua
-core\19.lua
-core\20.lua
-core\21.lua
-core\22.lua
-core\23.lua
-core\24.lua
-core\25.lua
-core\26.lua
-core\27.lua
-core\28.lua
-core\29.lua
-core\30.lua
-core\31.lua
-core\32.lua
-core\33.lua
-core\34.lua
-core\35.lua
-core\36.lua
-core\37.lua
-core\38.lua
-core\39.lua
-core\40.lua
+core\cvars.lua
+core\combaticon.lua
+core\easydelete.lua
+core\castingbars.lua
+core\showfps.lua
+core\hidebinds.lua
+core\hidemacros.lua
+core\unitframes.lua
+core\bigauras.lua
+core\arenaframeshide.lua
+core\range.lua
+core\safequeue.lua
+core\autorepair.lua
+core\oneclickenchant.lua
+core\speedyautoloot.lua
