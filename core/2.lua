@@ -1,156 +1,258 @@
------------------------------------------------------------------------------------------------------------------
---[[ ����������� ��������� ��� � OmniCC ]] --
-cs = 20;
-ps = 10;
-ctp = "CENTER"
-ptp = "BOTTOMRIGHT"
-cp = 1;
-ct = UNIT_NAME_FONT;
+﻿-- Изменение чата
+-- Timestamps
+local timeStampFormat = "%X"
+local timeStampOutput = "|cFFFFFFFF%s| %s"
 
-crt = 2;
-cDB = {}
-action = {}
-ccf = CreateFrame;
-gac = GetActionCooldown;
-ol = "OUTLINE"
-cpe = "PLAYER_ENTERING_WORLD"
-cau = "ACTIONBAR_UPDATE_COOLDOWN"
-co = "OnUpdate"
-----------------------------------------------:: 1
+local timeStampsEnabled = {true, -- [1]
+true, -- [2]
+true, -- [3]
+true, -- [4]
+true, -- [5]
+true, -- [6]
+true -- [7]
+}
 
-function rt(f)
-    f.e = nil
-    f.t:SetText("")
-    f:SetScript(co, nil)
-end
+-- Channel Names
+local channelNamePattern = {
+    ["%[Guild%]"] = "[G]",
+    ["%[Party%]"] = "[P]",
+    ["%[Raid%]"] = "[R]",
+    ["%[Party Leader%]"] = "[PL]",
+    ["%[Dungeon Guide%]"] = "[DG]",
+    ["%[Instance%]"] = "[I]",
+    ["%[Instance Leader%]"] = "|cffff3399[|rIL|cffff3399]|r",
+    ["%[Raid Leader%]"] = "|cffff3399[|rRL|cffff3399]|r",
+    ["%[Raid Warning%]"] = "|cffff0000[|rRW|cffff0000]|r",
+    ["%[Officer%]"] = "[O]",
+    ["%[Battleground%]"] = "|cffff3399[|rBG|cffff3399]|r",
+    ["%[Battleground Leader%]"] = "|cffff0000[|rBGL|cffff0000]|r",
+    ["%[%d+%.%s(%w*)%]"] = "|cff990066[|r%1|cff990066]|r"
+}
 
-function sf(f, v)
-    f.t:SetFont(ct, f.s * v, ol)
-end
+-- Mouse Scroll
+local scrollLines = 1
 
-function acv(b)
-    local x = b.cooldown
-    x.a = b.action
+-- UrlCopy
+local urlStyle = " |cffffffff|Hurl:%s|h[%s]|h|r "
 
-    action[x] = x
-end
+local urlPatterns = { -- X://Y url
+{"^(%a[%w%.+-]+://%S+)", "%1"}, {"%f[%S](%a[%w%.+-]+://%S+)", "%1"}, -- www.X.Y url
+{"^(www%.[-%w_%%]+%.%S+)", "%1"}, {"%f[%S](www%.[-%w_%%]+%.%S+)", "%1"},
+-- "W X"@Y.Z email (this is seriously a valid email)
+-- { pattern = '^(%"[^%"]+%"@[-%w_%%%.]+%.(%a%a+))', matchfunc=Link_TLD},
+-- { pattern = '%f[%S](%"[^%"]+%"@[-%w_%%%.]+%.(%a%a+))', matchfunc=Link_TLD},
+-- X@Y.Z email
+{"(%S+@[-%w_%%%.]+%.(%a%a+))", "%1"}, -- XXX.YYY.ZZZ.WWW:VVVV/UUUUU IPv4 address with port and path
+{"^([0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d:[0-6]?%d?%d?%d?%d/%S+)", "%1"},
+{"%f[%S]([0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d:[0-6]?%d?%d?%d?%d/%S+)", "%1"},
+-- XXX.YYY.ZZZ.WWW:VVVV IPv4 address with port (IP of ts server for example)
+{"^([0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d:[0-6]?%d?%d?%d?%d)%f[%D]", "%1"},
+{"%f[%S]([0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d:[0-6]?%d?%d?%d?%d)%f[%D]", "%1"},
+-- XXX.YYY.ZZZ.WWW/VVVVV IPv4 address with path
+{"^([0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d%/%S+)", "%1"},
+{"%f[%S]([0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d%/%S+)", "%1"}, -- XXX.YYY.ZZZ.WWW IPv4 address
+{"^([0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d%)%f[%D]", "%1"},
+{"%f[%S]([0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d%)%f[%D]", "%1"}, -- X.Y.Z:WWWW/VVVVV url with port and path
+{"^([-%w_%%%.]+[-%w_%%]%.(%a%a+):[0-6]?%d?%d?%d?%d/%S+)", "%1"},
+{"%f[%S]([-%w_%%%.]+[-%w_%%]%.(%a%a+):[0-6]?%d?%d?%d?%d/%S+)", "%1"},
+-- X.Y.Z:WWWW url with port (ts server for example)
+{"^([-%w_%%%.]+[-%w_%%]%.(%a%a+):[0-6]?%d?%d?%d?%d)%f[%D]", "%1"},
+{"%f[%S]([-%w_%%%.]+[-%w_%%]%.(%a%a+):[0-6]?%d?%d?%d?%d)%f[%D]", "%1"}, -- X.Y.Z/WWWWW url with path
+{"^([-%w_%%%.]+[-%w_%%]%.(%a%a+)/%S+)", "%1"}, {"%f[%S]([-%w_%%%.]+[-%w_%%]%.(%a%a+)/%S+)", "%1"} -- X.Y.Z url
+-- { "^([-%w_%%]+%.[-%w_%%]+%.%S+)", "%1"},
+-- { "%f[%S]([-%w_%%]+%.[-%w_%%]+%.%S+)", "%1"},
+}
 
-function scv(p, f, po, s)
-    if (s > 1) then
-        f.t:SetPoint(po, p)
-    end
-    f.s = s;
-end
+local _G = _G
+local format, gsub, strlen, strsub = string.format, string.gsub, string.len, string.sub
+local pairs, type, date = pairs, type, date
 
-----------------------------------------------:: 2
-
-function sr(f, e)
-    if (e > 60) then
-        sf(f, 0.7)
-        if (f.s == cs) then
-            return "%d:%02d", e, e
-        else
-            return "%dm", e + 60, e
-        end
-    elseif (e >= cp) then
-        sf(f, 1)
-        f.t:SetTextColor(1, 1, 0, 1)
-        return "%d", e
-    elseif (e > 0) then
-        sf(f, 0.9)
-        f.t:SetTextColor(1, 0, 0, 1)
-        return "%.1f", e
-    else
-        return
-    end
-end
-
-----------------------------------------------:: 3
-function suc(f)
-    if not f.e then
-        f.e = 1;
-        f:SetScript(co, function(s, e)
-            f.c = f.c + e;
-            local fo, v1, v2 = sr(f, f.r - f.c)
-            if not fo then
-                rt(f)
-            elseif not v2 then
-                f.t:SetFormattedText(fo, v1)
-            else
-                f.t:SetTextColor(1, 1, 1, 1)
-                f.t:SetFormattedText(fo, v1 / 60, v2 % 60)
+-- Timestamps + Channel Names + UrlCopy (AddMessage hooks)
+do
+    local orig = {}
+    local function AddMessageHook(frame, text, ...)
+        if type(text) == "string" then
+            -- Channel Names
+            for k, v in pairs(channelNamePattern) do
+                text = gsub(text, k, v)
             end
-        end)
+            -- url copy
+            if strlen(text) > 7 then
+                for i = 1, #urlPatterns do
+                    local v = urlPatterns[i]
+                    text = gsub(text, v[1], format(urlStyle, v[2], v[2]))
+                end
+            end
+
+        end
+        return orig[frame](frame, text, ...)
+    end
+
+    for i = 1, NUM_CHAT_WINDOWS do
+        local c = _G["ChatFrame" .. i]
+        orig[c] = c.AddMessage
+        c.AddMessage = AddMessageHook
+    end
+
+    local currentLink, origItemRefSetHyperlink
+    local function setItemRefHyperlink(tooltip, link, ...)
+        if strsub(link, 1, 3) == "url" then
+            currentLink = strsub(link, 5)
+            StaticPopup_Show("SCMUrlCopyDialog")
+            tooltip:Hide()
+            return
+        end
+        return origItemRefSetHyperlink(tooltip, link, ...)
+    end
+    origItemRefSetHyperlink = ItemRefTooltip.SetHyperlink
+    ItemRefTooltip.SetHyperlink = setItemRefHyperlink
+
+    StaticPopupDialogs["SCMUrlCopyDialog"] = {
+        text = "URL",
+        button2 = TEXT(CLOSE),
+        hasEditBox = 1,
+        hasWideEditBox = 1,
+        showAlert = 1,
+        OnShow = function(this)
+            local editBox = _G[this:GetName() .. "EditBox"]
+            if editBox then
+                editBox:SetText(currentLink)
+                editBox:SetFocus()
+                editBox:HighlightText(0)
+            end
+            local button = _G[this:GetName() .. "Button2"]
+            if button then
+                button:ClearAllPoints()
+                button:SetWidth(200)
+                button:SetPoint("CENTER", editBox, "CENTER", 0, -30)
+            end
+            local icon = _G[this:GetName() .. "AlertIcon"]
+            if icon then
+                icon:Hide()
+            end
+        end,
+        EditBoxOnEscapePressed = function(this)
+            this:GetParent():Hide()
+        end,
+        timeout = 0,
+        whileDead = 1,
+        hideOnEscape = 1
+    }
+end
+
+-- Buttons
+--[[local FixChatButtons
+do
+	ChatFrameMenuButton.Show = ChatFrameMenuButton.Hide --Hide the chat shortcut button for emotes/languages/etc
+	ChatFrameMenuButton:Hide() --Hide the chat shortcut button for emotes/languages/etc
+	if FriendsMicroButton then
+		FriendsMicroButton.Show = FriendsMicroButton.Hide --Hide the "Friends Online" count button
+		FriendsMicroButton:Hide() --Hide the "Friends Online" count button
+	end
+	if QuickJoinToastButton then
+		QuickJoinToastButton.Show = QuickJoinToastButton.Hide
+		QuickJoinToastButton:Hide()
+	end
+
+	function FixChatButtons(i)
+		local f = _G[format("%s%d%s", "ChatFrame", i, "ButtonFrame")]
+		f.Show = f.Hide --Hide the up/down arrows
+		f:Hide() --Hide the up/down arrows
+		_G[format("%s%d", "ChatFrame", i)]:SetClampRectInsets(0,0,0,0) --Allow the chat frame to move to the end of the screen
+	end
+
+	for i = 1, NUM_CHAT_WINDOWS do
+		FixChatButtons(i)
+	end
+end
+]] --
+-- Editbox
+local FixEditBox
+do
+    function FixEditBox(i)
+        local eb = _G[format("%s%d%s", "ChatFrame", i, "EditBox")]
+        local cf = _G[format("%s%d", "ChatFrame", i)]
+        eb:SetAltArrowKeyMode(false)
+    end
+
+    for i = 1, NUM_CHAT_WINDOWS do
+        FixEditBox(i)
     end
 end
-----------------------------------------------:: 4
-function scs(p, f)
-    if (p:GetSize() < 35) then
-        scv(p, f, ctp, ps)
-    else
-        scv(p, f, ctp, cs)
-    end
-end
 
-function gict(f)
-    local c = ccf("Frame", nil, f)
-    c:SetFrameLevel(f:GetFrameLevel() + 5)
-    c.t = c:CreateFontString(nil, "OVERLAY")
-    c.t:SetAllPoints(c)
-    scs(f:GetParent(), c)
-    return c;
-end
-----------------------------------------------:: 5
-
-function gct(f)
-    if not cDB[f] then
-        local c = gict(f)
-        c:SetSize(c.s * crt, c.s * crt)
-        sf(c, 1)
-        cDB[f] = c;
-    end
-    return cDB[f]
-end
-
-function cvf(f, s, d)
-    local c = gct(f)
-
-    if (s and d) then
-        c.b = s;
-        c.d = d;
-        if (s > 0 and d > 1.5) then
-            c.c = 0;
-            c.r = d - (GetTime() - s);
-            suc(c)
-        else
-            rt(c)
+-- Scroll
+local FixScroll
+do
+    local function scroll(self, arg1)
+        if arg1 > 0 then
+            if IsShiftKeyDown() then
+                self:ScrollToTop()
+            elseif IsControlKeyDown() then
+                self:PageUp()
+            else
+                for i = 1, scrollLines do
+                    self:ScrollUp()
+                end
+            end
+        elseif arg1 < 0 then
+            if IsShiftKeyDown() then
+                self:ScrollToBottom()
+            elseif IsControlKeyDown() then
+                self:PageDown()
+            else
+                for i = 1, scrollLines do
+                    self:ScrollDown()
+                end
+            end
         end
     end
+
+    function FixScroll(i)
+        local cf = _G["ChatFrame" .. i]
+        cf:SetScript("OnMouseWheel", scroll)
+        cf:EnableMouseWheel(true)
+    end
+
+    for i = 1, NUM_CHAT_WINDOWS do
+        FixScroll(i)
+    end
 end
-----------------------------------------------:: 6
-function cvc(DB)
-    for c in pairs(DB) do
-        if c.a then
-            local s, d = gac(c.a)
-            cvf(c, s, d)
+
+for i = 1, NUM_CHAT_WINDOWS do
+    _G["ChatFrame" .. i].isNevModAugmented = true
+end
+
+hooksecurefunc("FCF_OpenTemporaryWindow", function()
+    for id, frame in pairs(CHAT_FRAMES) do
+        local cf = _G[frame]
+        if not cf.isNevModAugmented then
+            FixChatButtons(id)
+            FixEditBox(id)
+            FixScroll(id)
+            cf.isNevModAugmented = true
         end
     end
+end)
+--
+-- Chat window like Prat 
+for i = 1, NUM_CHAT_WINDOWS do
+    local eb = _G['ChatFrame' .. i .. 'EditBox']
+    eb:Hide()
+    eb:HookScript('OnEnterPressed', function(s)
+        s:Hide()
+    end)
 end
-
-function pcv(_, e)
-    if e == cau then
-        cvc(action)
-    else
-        cvc(cDB)
-    end
+ChatFrame1:SetClampedToScreen(nil)
+ChatFrame1EditBox:EnableMouse(false);
+ChatFrame1:EnableMouse(false)
+ChatFrame1:SetFont("Fonts\\ARIALN.TTF", 14);
+--
+-- Chat Hide tab windows
+CHAT_FRAME_TAB_NORMAL_NOMOUSE_ALPHA = 0
+CHAT_FRAME_TAB_SELECTED_NOMOUSE_ALPHA = 0
+for i = 1, NUM_CHAT_WINDOWS do
+    local tab = _G["ChatFrame" .. i .. "Tab"]
+    tab.noMouseAlpha = 0
+    tab:SetAlpha(0)
 end
-----------------------------------------------:: 7
-
-vc = ccf("Frame")
-vc:SetScript("OnEvent", pcv)
-vc:RegisterEvent(cpe)
-vc:RegisterEvent(cau)
-
-hooksecurefunc(getmetatable(ActionButton1Cooldown).__index, "SetCooldown", cvf)
-----------------------------------------------:: 8	
------------------------------------------------------------------------------------------------------------------	
+--
