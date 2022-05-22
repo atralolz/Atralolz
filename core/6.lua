@@ -1,36 +1,39 @@
-п»ї-----------------------------------------------------------------------------------------------------------------
---[[ CombatChecker/РёРєРѕРЅРєР° РєРѕРјР±Р°С‚Р° РґР»СЏ РІСЂР°РіРѕРІ ]] --
-LoadAddOn("Blizzard_ArenaUI")
+	--[[ Autorepair and sell trash/Aвтопродажа серых вещей и ремонт ]]--
+	local g = CreateFrame("Frame")
+	g:RegisterEvent("MERCHANT_SHOW")
 
-local CTT = CreateFrame("Frame", nil, TargetFrame) -- TargetFrame Combat Checker
-CTT:SetPoint("CENTER", TargetFrame, "CENTER", 40, -10)
+	g:SetScript("OnEvent", function()  
+		local bag, slot
+		for bag = 0, 4 do
+			for slot = 0, GetContainerNumSlots(bag) do
+				local link = GetContainerItemLink(bag, slot)
+				if link and (select(3, GetItemInfo(link)) == 0) then
+					UseContainerItem(bag, slot)
+				end
+			end
+		end
 
-local CFT = CreateFrame("Frame", nil, FocusFrame) -- FocusFrame Combat Checker
-CFT:SetPoint("CENTER", FocusFrame, "CENTER", 40, -10)
-
-local frames = {
-    target = {CTT, "PLAYER_TARGET_CHANGED"},
-    focus = {CFT, "PLAYER_FOCUS_CHANGED"}
-}
-
-for k, v in pairs(frames) do
-    local f = v[1]
-    f:SetSize(20, 20)
-    f:SetScale(1.6)
-    f.t = f:CreateTexture(nil, "BORDER")
-    f.t:SetAllPoints()
-    f.t:SetTexture("Interface\\CHARACTERFRAME\\UI-StateIcon.blp")
-    f.t:SetTexCoord(0.5, 1, 0, 0.49);
-    f:Hide()
-
-    f:SetScript("OnEvent", function(self, event, unit)
-        if unit == k or event == v[2] then
-            self[UnitAffectingCombat(k) and "Show" or "Hide"](self)
-        end
-    end)
-
-    f:RegisterEvent("UNIT_FLAGS")
-    f:RegisterEvent("PLAYER_TARGET_CHANGED")
-    f:RegisterEvent("PLAYER_FOCUS_CHANGED")
-end
------------------------------------------------------------------------------------------------------------------
+		if(CanMerchantRepair()) then
+			local cost = GetRepairAllCost()
+			if cost > 0 then
+				local money = GetMoney()
+				if IsInGuild() then
+					local guildMoney = GetGuildBankWithdrawMoney()
+					if guildMoney > GetGuildBankMoney() then
+						guildMoney = GetGuildBankMoney()
+					end
+					if guildMoney > cost and CanGuildBankRepair() then
+						RepairAllItems(1)
+						print(format("|cfff07100Repair cost covered by G-Bank: %.1fg|r", cost * 0.0001))
+						return
+					end
+				end
+				if money > cost then
+					RepairAllItems()
+					print(format("|cffead000Repair cost: %.1fg|r", cost * 0.0001))
+				else
+					print("Not enough gold to cover the repair cost.")
+				end
+			end
+		end
+	end)

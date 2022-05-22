@@ -1,7 +1,6 @@
-## Interface: 30300
-## Title: |c00DC143CAtra Scripts|r |c007FBFF1(for 3.3.5a)|r
-## Notes: |c00FFA500<|r |c00F5F5DCCustom scripts for WotLK|r |c00FFA500>|r
-## Version: 1.0
+## Interface: 70300
+## Title: |c0096FF96Atralolz|r
+## Notes: |c00FFFF00By Atralolz|r |c006969FF(for Legion 7.3.5)|r
 ## Author: Atralolz
 
 core\1.lua
@@ -24,3 +23,23 @@ core\17.lua
 core\18.lua
 core\19.lua
 core\20.lua
+core\21.lua
+core\22.lua
+core\23.lua
+core\24.lua
+core\25.lua
+core\26.lua
+core\27.lua
+core\28.lua
+core\29.lua
+core\30.lua
+core\31.lua
+core\32.lua
+core\33.lua
+core\34.lua
+core\35.lua
+core\36.lua
+core\37.lua
+core\38.lua
+core\39.lua
+core\40.lua

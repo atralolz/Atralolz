@@ -1,46 +1,38 @@
-п»ї-----------------------------------------------------------------------------------------------------------------
---[[ Class colors in target name background ]] --
-local frame = CreateFrame("FRAME")
-frame:RegisterEvent("PLAYER_ENTERING_WORLD")
-frame:RegisterEvent("PARTY_MEMBERS_CHANGED")
-frame:RegisterEvent("PLAYER_TARGET_CHANGED")
-frame:RegisterEvent("PLAYER_FOCUS_CHANGED")
-frame:RegisterEvent("UNIT_FACTION")
-frame:RegisterEvent("ARENA_OPPONENT_UPDATE")
+	--[[ Переместить каст бар игрока ]]--                              
+	CastingBarFrame:ClearAllPoints()
+	CastingBarFrame:SetPoint("CENTER", WorldFrame, "CENTER", 0, -140)
+	CastingBarFrame.SetPoint = function() end
+	CastingBarFrame:SetScale(1.5)
 
-local function eventHandler(self, event, ...)
-    local unitid = ...
+	--[[ Переместить каст бар цели ]]--
+	TargetFrameSpellBar:ClearAllPoints()
+	TargetFrameSpellBar:SetPoint("CENTER", UIParent, "CENTER", 0, 85)
+	TargetFrameSpellBar.SetPoint = function() end
+	TargetFrameSpellBar:SetScale(1.4)
 
-    if (event == "UNIT_FACTION" and unitid ~= "target" and unitid ~= "focus") then
-        return
-    end
+	--[[ Переместить каст бар фокуса ]]--
+	FocusFrameSpellBar:ClearAllPoints()
+	FocusFrameSpellBar:SetPoint("CENTER", UIParent, "CENTER", 0, 125)
+	FocusFrameSpellBar.SetPoint = function() end
+	FocusFrameSpellBar:SetScale(1.4)
+	
+	FocusFrameSpellBar:SetStatusBarColor(0,0.45,0.9)  -- Casting bar color
+	FocusFrameSpellBar.SetStatusBarColor = function() end
 
-    if UnitIsPlayer("target") then
-        _, class = UnitClass("target")
-        c = RAID_CLASS_COLORS[class]
-        TargetFrameNameBackground:SetVertexColor(c.r, c.g, c.b)
-    end
-    if UnitIsPlayer("focus") then
-        _, class = UnitClass("focus")
-        c = RAID_CLASS_COLORS[class]
-        FocusFrameNameBackground:SetVertexColor(c.r, c.g, c.b)
-    end
-end
+	--[[ Переместить фрейм игрока, цели и фокуса ]]--
+local a = CreateFrame("Frame")
+a:SetScript("OnEvent", function(self, event)
+	if event == "PLAYER_ENTERING_WORLD" then
 
-local bar, color
-for i = 1, 5 do
-    bar = _G["ArenaEnemyFrame" .. i .. "HealthBar"]
-    color = RAID_CLASS_COLORS[select(2, UnitClass("arena" .. i))]
-    if color then
-        bar:SetStatusBarColor(color.r, color.g, color.b)
-    end
-end
+	PlayerFrame:ClearAllPoints() -- PlayerFrame move
+	PlayerFrame:SetPoint("TOPLEFT",UIParent,"TOPLEFT", 250, -337)
 
-frame:SetScript("OnEvent", eventHandler)
+	TargetFrame:ClearAllPoints() -- TargetFrame move
+	TargetFrame:SetPoint("TOPLEFT",UIParent,"TOPLEFT", 350, -380)
 
--- Brighter targetname and focusname textures (fix)
-
-for _, BarTextures in pairs({TargetFrameNameBackground, FocusFrameNameBackground}) do
-    BarTextures:SetTexture("Interface\\TargetingFrame\\UI-StatusBar")
-end
------------------------------------------------------------------------------------------------------------------	
+	FocusFrame:ClearAllPoints() -- FocusFrame move
+	FocusFrame:SetPoint("TOPLEFT",UIParent,"TOPLEFT", 900, -480)
+	end
+end)
+a:RegisterEvent("PLAYER_ENTERING_WORLD")
+--

@@ -1,37 +1,218 @@
-﻿local a = CreateFrame("Frame")
-a:SetScript("OnEvent", function(self, event)
-    if event == "PLAYER_ENTERING_WORLD" then
-        -----------------------------------------------------------------------------------------------------------------	
-        LARGE_NUMBER_SEPERATOR = "," -- Разделитель тысяч
-        ITEM_CREATED_BY = "" -- Скрыть создателя предмета
-        -----------------------------------------------------------------------------------------------------------------
+﻿local cvars = {
+  
+	--[[ CONTROLS ]]--
+	
+	autoClearAFK = "1", -- Снимает AFK-режим
+	autoDismountFlying = "0", -- Автоматическое спешивание при применении заклинания с флай маунта
+	autoDismount = "1", -- Автоматическое спешивание при применении заклинания
+	autointeract = "0", -- Автоматическое взаимодействие
+--	autoLootDefault = "1", -- Включает автолут
+	autoOpenLootHistory = "0", -- Автооткрытие окна ролла лута при выпадении необычное и выше
+	autoStand = "1", -- Встать при использовании способности
+	autoUnshift = "0", -- Автоматическое сбрасывание формы при использовании заклинаний
+	blockChannelInvites = "1", -- Блокировать приглашения в каналы чата
+	blockTrades = "0", -- Блокировать обмен
+	deselectOnClick = "0", -- Сброс цели при клике по пустой области
+	interactOnLeftClick = "0", -- Взаимодействие по щелчку
+	lootUnderMouse = "1", -- Окно лута под курсором
+	synchronizeBindings = "1", -- no UI
+	synchronizeConfig = "1", -- no UI
+	synchronizeMacros = "1", -- no UI
+	synchronizeSettings = "1", -- no UI
 
-        SetCVar("assistAttack", 1); -- Whether to start attacking after an assist
-        SetCVar("autoClearAFK", 1); -- Automatically clear AFK when moving or chatting
-        SetCVar("autoInteract", 0); -- Toggles auto-move to interact target
-        SetCVar("autoLootDefault", 1); -- Automatically loot items when the loot window opens
+	--[[ COMBAT ]]--
+	
+	ActionButtonUseKeyDown = "1", -- Способности будут задействоваться, когда пользователь нажимает, а не отпускает клавишу
+	assistAttack = "1", 
+	autoSelfCast = "1", -- Автовыбор себя
+	displaySpellActivationOverlays = "0", -- Проки по центру экрана
+	lossOfControl = "1",
+	lossOfControlDisarm = "2",
+	lossOfControlFull = "2",
+	lossOfControlInterrupt = "2",
+	lossOfControlRoot = "2",
+	lossOfControlSilence = "2",
+	spellActivationOverlayOpacity = "0", -- Проки на панелях
+	stopAutoAttackOnTargetChange = "0", -- Прекращение автоатаки при смене цели
 
-        SetCVar("chatBubbles", 1); -- Whether to show in-game chat bubbles
-        SetCVar("chatBubblesParty", 1); -- Whether to show in-game chat bubbles for party chat
-        SetCVar("chatMouseScroll", 1); -- Whether the user can use the mouse wheel to scroll through chat
-        SetCVar("chatStyle", "classic"); -- The style of Edit Boxes for the ChatFrame. Valid values: "classic", "im"
+	--[[ DISPLAY ]]--
+	
+	displayFreeBagSlots = "1", -- Показать свободные ячейки в рюкзаке
+	displayWorldPVPObjectives     = "1", -- Показать PvP объекты 
+	dontShowEquipmentSetsOnItems  = "0", -- no UI
+	movieSubtitle = "1",
+	Outline = "1", -- Quest Objectives Only
+	screenEdgeFlash = "0", -- no UI
+	serviceTypeFilter = "2", -- no UI
+	showQuestTrackingTooltips = "1", -- no UI
+	
+	threatWarning = "0", -- Агрометр
+    threatPlaySounds = "0", -- Звуковое оповещение об угрозе
+    threatShowNumeric = "0", -- Показывать или не показывать числовую угрозу на тaргете и фокусе
+    threatWorldText = "0", -- Показывать или не показывать угрозу в бою
+	
+	timeMgrUseLocalTime = "1", -- no UI
+	BreakUpLargeNumbers = "1", -- Разделяеть запятой тысячи
+	calendarShowResets = "1", -- Должны ли появляться сбросы рейдов в календаре
+	showSpenderFeedback = "0", -- Отключить полоску об использовании энергии
+	comboPointLocation = "0", -- Старое отображение комбопоинтов
+	alwaysCompareItems = "0",-- Сравнение вещей Shift
 
-        SetCVar("displayFreeBagSlots", 1); -- Whether or not the backpack button should indicate how many inventory slots you've got free
-        SetCVar("displayWorldPVPObjectives", 1); -- Whether to show world PvP objectives
+	--[[ OBJECTIVES ]]--
+	
+	autoQuestWatch     = "1",
+	autoQuestProgress  = "0", -- no UI
+	mapFade            = "0",
+--	mapQuestDifficulty = "0",
+	trackQuestSorting  = "proximity",
+--	watchFrameWidth    = "1",
 
-        SetCVar("buffDurations", 1); -- Whether to show buff durations
-        SetCVar("fullSizeFocusFrame", 1); -- Increases the size of the focus frame to that of the target frame
+	--[[ COSIAL ]]--
+	
+	chatBubbles = "0", -- Сообщения в облачках
+	chatBubblesParty = "0", -- Сообщения в облачках для группы
+	chatStyle = "classic", -- Стиль чата ("classic" or "im")
+--	chatTimestamps           = "none",
+	colorChatNamesByClass = "1", -- no UI
+	guildMemberNotify = "1",
+	profanityFilter = "0", -- Фильтр ненормативной лексики
+	removeChatDelay = "1", -- Удалить задержку чата
+	showToastWindow = "0",
+	spamFilter = "1", -- Фильтр спама
+	wholeChatWindowClickable = "0", -- Клик сквозь чат
 
-        SetCVar("autoDismount", 1); -- Dismount when trying to use an ability
-        SetCVar("autoDismountFlying", 0); -- Dismount when trying to use an ability even when flying
+	--[[ FLOATING COMBAT TEXT]]--
+	
+	enableFloatingCombatText        = "0",
+	floatingCombatTextCombatDamageDirectionalScale = "0", -- Старый текст боя
+	floatingCombatTextCombatHealingAbsorbTarget    = "0",
+	floatingCombatTextLowManaHealth = "0",
+	floatingCombatTextReactives     = "0",
 
-        SetCVar("threatWarning", 0); -- Enable Auto-Dismounting 
+	--[[ NAMEPLATES ]]--
+	
+	nameplateMotion = "1", -- Stacking, not Overlapping
+	nameplateOtherBottomInset = "-1", -- don't stick nameplates to the screen edges for offscreen mobs
+	nameplateOtherTopInset = "-1",
+	nameplateShowAll = "1", -- Показывать неймплейты всегда, а не только в бою
+	nameplateShowFriends = "0", -- Неймплейты союзников
+	nameplateShowFriendlyPets = "0", -- Нейплейты петомцев союзников
+	nameplateShowFriendlyGuardians = "0", -- Неймплейты стражей союзников
+	nameplateShowFriendlyTotems = "0", -- Неймплейты тотемов союзников
+	
+	nameplateShowEnemies = "1", -- Неймплейты врагов
+    nameplateShowEnemyPets = "1", -- Нейплейты вражеских петомцев
+    nameplateShowEnemyGuardians = "0", -- Неймплейты вражеских стражей
+    nameplateShowEnemyTotems = "1", -- Неймплейты вражеских тотемов
+    ShowClassColorInNameplate = "1", -- Нейплейты под цвет класса
+	
+	nameplateShowEnemyMinions = "1", -- Неймплейты враждебных NPC
+	nameplateShowEnemyMinus = "1", -- Неймплейты незначительных NPC
+	nameplateShowSelf = "0", -- Неймплейт для себя
 
-        SetCVar("ffxDeath", 0); -- full screen death desat effect
-        SetCVar("ffxGlow", 0); -- full screen glow effect
-        SetCVar("screenshotQuality", 10); -- Pimp Screenshot Quality
+	--[[ UNIT FRAMES ]]--
+	
+	fullSizeFocusFrame   = "1", -- Размер фрейма фокуса как у фрейма цели
+--	showArenaEnemyFrames = "1",
+	showTargetOfTarget   = "1", -- Цель цели
+	showPartyBackground = "0",
+    showPartyPets = "0", -- Петомцы группы
+	
+	--[[ UNIT NAMES ]]--
+	
+	UnitNameOwn = "0", -- Имя игрока
+	UnitNameGuildTitle = "0", -- Гильдейское звание
+	UnitNamePlayerGuild = "0", -- Название гильдии
+	UnitNamePlayerPVPTitle = "0", -- PvP звание
+	
+	UnitNameFriendlyGuardianName = "0", -- Имена стражей союзников
+	UnitNameFriendlyPetName = "0", -- Имена петомцев союзников
+	UnitNameFriendlyPlayerName = "1",-- Имена союзников
+	UnitNameFriendlyTotemName = "0", -- Имена тотемов союзников
+	
+	UnitNameEnemyPlayerName = "1", -- Имена врагов
+	UnitNameEnemyPetName         = "1", -- Имена петомцев врагов
+	UnitNameEnemyGuardianName    = "1", -- Имена стражей врагов
+	UnitNameEnemyTotemName       = "1", -- Имена тотемов врагов
+	
+	UnitNameFriendlySpecialNPCName = "1", -- Quest NPCs
+	UnitNameHostleNPC = "0", -- typo accurate
+	UnitNameInteractiveNPC = "0",
+	UnitNameNPC = "0", -- Имена НПЦ
+	ShowQuestUnitCircles = "1",
+	
+	--[[ RAID PROFILES ]]--
+	
+	raidFramesDisplayAggroHighlight = "0", -- Индикатор угрозы рейда
+	raidFramesDisplayClassColor = "1", -- Цвета классов
+	raidFramesDisplayOnlyDispellableDebuffs = "1", -- Показать только рассеиваемые отрицательные эффекты
+	raidFramesDisplayPowerBars = "0", -- Индикаторы ресурсов
+--	raidFramesHealthText = 'none', -- Отображение здоровья
+--	raidFramesHeight = "36", -- Высота рамки рейда
+--	raidFramesPosition = , -- Позиция рамки рейда
+--	raidFramesWidth = "72", -- Ширина рамки рейда
+	raidOptionDisplayMainTankAndAssist = "1", -- Показать главного танка и наводчика
+	raidOptionDisplayPets = "0", -- Показать питомцев
+--	raidOptionIsShown = "1", 
+--	raidOptionKeepGroupsTogether = "1", -- Рейдовый интерфейс для группы
+--	raidOptionLocked = 'lock' -- 
+	raidOptionShowBorders = "1", -- Показать граници
+	raidOptionSortMode = 'role', -- Сортировка по роли
 
-        -----------------------------------------------------------------------------------------------------------------
-    end
+	--[[ CAMERA ]]--
+	
+	cameraDistanceMaxZoomFactor = "2.5",
+	cameraSmoothStyle = "1",   -- Only horizontal when moving
+
+	--[[ HELP ]]--
+	
+	scriptErrors  = "1", -- Ошибки сценариев LUA
+	showTutorials = "0", -- Обучение
+
+	--[[ MISCELLANEOUS ]]--
+	
+	addFriendInfoShown = "1",
+	screenshotFormat   = "png", -- Формат скриншота
+	screenshotQuality  = "10", -- Качество скриншота
+	talentFrameShown   = "1",
+
+	--[[ GRAPHICS ]]--
+	
+	ffxGlow = "0", -- full screen glow
+	ffxDeath = "0", 
+	groundEffectDist    = "100",
+	groundEffectDensity = "128",
+--	maxfps              = "30",
+	maxfpsbk = "15",
+	pathSmoothing = "1",
+	uiscale = "1", -- Размер интерфейса
+	useUiScale = "1", -- never wanted this before, but its behavior is different in 7.1
+	violenceLevel = "5", -- min 0, max 5
+
+
+}
+
+local f = CreateFrame("Frame")
+f:RegisterEvent("PLAYER_LOGIN")
+f:SetScript("OnEvent", function()
+	SetAutoDeclineGuildInvites(true)
+	ShowAccountAchievements(true) -- show ONLY account achievements
+	ConsoleExec("fixedfunction 1") -- disable "tunnel vision" glow effect (not a cvar)
+	ConsoleExec("extShadowQuality 0") -- disable shadows
+
+	for cvar, value in pairs(cvars) do
+		local current = tostring(GetCVar(cvar))
+		if current ~= value then
+			--print("SetCVar", cvar, value)
+			SetCVar(cvar, value)
+		end
+	end
 end)
-a:RegisterEvent("PLAYER_ENTERING_WORLD")
+
+hooksecurefunc("SetCVar", function(k, v)
+	local o = cvars[k]
+	if o and tostring(v) ~= o then
+		print("|cffff9f7fSetCVar|r", k, o, "|cffff9f7f==>|r", v)
+		print("Cvars : Initialized")
+	end
+end)
